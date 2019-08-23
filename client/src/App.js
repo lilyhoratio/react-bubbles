@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import Login from "./components/Login";
 import BubblePage from "./components/BubblePage";
 import PrivateRoute from "./components/PrivateRoute";
+import "antd/dist/antd.css";
 import "./styles.scss";
 
 // http://localhost:5000
