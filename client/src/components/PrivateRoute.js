@@ -1,6 +1,7 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
 
+// RENDER
 const PrivateRoute = ({ component: Component, ...rest }) => {
   // console.log("Private route props: ", rest)
 
@@ -18,3 +19,13 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 };
 
 export default PrivateRoute;
+
+// const ProtectedRoute = Component => props => {
+//   if (localStorage.getItem("token")) {
+//     return <Component {...props} />;
+//   } else {
+//     return <Redirect to="/" />;
+//   }
+// };
+
+// export default ProtectedRoute;
