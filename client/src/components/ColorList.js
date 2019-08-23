@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { axiosWithAuth } from "../utils/axiosWithAuth";
+import { notification } from "antd";
 
 const initialColor = {
   color: "",
@@ -9,7 +10,6 @@ const initialColor = {
 const ColorList = ({ colors, updateColors }) => {
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
-  console.log(colorToEdit);
 
   const editColor = color => {
     setEditing(true);
@@ -24,27 +24,44 @@ const ColorList = ({ colors, updateColors }) => {
     axiosWithAuth()
       .put(`http://localhost:5000/api/colors/${colorToEdit.id}`, colorToEdit)
       .then(res => {
-        updateColors(
-          colors.map(color => {
-            if (color.id === colorToEdit.id) {
-              console.log("IF", res.data);
-              return res.data;
+        let temp = colors.map(color => {
+          if (color.id === colorToEdit.id) {
+            return res.data; // updated color
+          } else {
+            return color; //original color in array
+          }
+        });
+
+        // updateColors(temp);
+
+        colors.map(color => {
+          if (color.id === colorToEdit.id) {
+            // if the user didn't edit anything on save edit, alert notification
+            if (
+              color.color === colorToEdit.color &&
+              color.code.hex === colorToEdit.code.hex
+            ) {
+              console.log("no edits!");
+              notification.open({
+                message: "No edits made.",
+                description: "test"
+              });
             } else {
-              console.log("ELSE", color);
-              return color;
+              // if there were edits made, update the colors array
+              updateColors(temp);
             }
-          })
-        );
+          }
+        });
       })
       .catch(err => console.log("PUT ERROR: ", err));
   };
 
   const deleteColor = color => {
-    console.log("delete", color);
     axiosWithAuth()
-      .delete(`http://localhost:5000/api/colors/${color.id}`, color.id)
+      .delete(`http://localhost:5000/api/colors/${color.id}`)
       .then(res => {
-        console.log(res);
+        console.log("delete", res);
+        updateColors(colors.filter(col => col.id !== color.id));
       })
       .catch(err => console.log("DELETE ERROR: ", err));
   };
